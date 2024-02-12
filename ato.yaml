@@ -1,0 +1,6 @@
+ato-version: ^0.2.0
+builds:
+  default:
+    entry: elec/src/lis2dh12tr.ato:Lis2dh12tr
+dependencies:
+- generics
