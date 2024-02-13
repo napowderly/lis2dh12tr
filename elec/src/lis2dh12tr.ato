@@ -1,2 +1,71 @@
-module Lis2dh12tr:
-    signal gnd
+import SPI from "generics/interfaces.ato"
+import I2C from "generics/interfaces.ato"
+import Power from "generics/interfaces.ato"
+import Capacitor from "generics/capacitors.ato"
+import Pair from "generics/interfaces.ato"
+import Resistor from "generics/resistors.ato"
+
+component _LIS2DH12TR:
+    # component LIS2DH12TR
+    footprint = "LGA-12_L2.0-W2.0-P0.50-BL"
+    lcsc_id = "C110926"
+    mpn = "C110926"
+    # pins
+    signal SCL_SPC ~ pin 1
+    signal CS ~ pin 2
+    signal SDO_SA0 ~ pin 3
+    signal SDA_SDI_SDO ~ pin 4
+    signal RES ~ pin 5
+    signal GND ~ pin 6
+    GND ~ pin 7
+    GND ~ pin 8
+    signal VDD ~ pin 9
+    signal VDD_IO ~ pin 10
+    signal INT2 ~ pin 11
+    signal INT1 ~ pin 12
+
+
+module LIS2DH12TR:
+    """Ultra low power accelerometer and gyroscope"""
+    ic = new _LIS2DH12TR
+    spi = new SPI
+    i2c = new I2C
+    power = new Power
+    interrup1 = new Pair
+    interrup2 = new Pair
+
+    # Power
+    power.vcc ~ ic.VDD
+    power.vcc ~ ic.VDD_IO
+    power.gnd ~ ic.GND
+    power.gnd ~ ic.RES
+
+    # Communication mode selection
+    ic.CS ~ power.vcc # I2C mode
+
+    # uncomment the following line to enable SPI mode and comment the previous line
+    # cs_res = new Resistor
+    # cs_res.value = 10kohm +/- 20%
+    # cs_res.package = "0402"
+    # cs_res.1 ~ ic.CS
+    # cs_res.2 ~ ic.GND
+
+    # SPI
+    spi.miso ~ ic.SDO_SA0
+    spi.mosi ~ ic.SDA_SDI_SDO
+    spi.sck ~ ic.SCL_SPC
+    spi.cs ~ ic.CS
+    spi.gnd ~ ic.GND
+
+    # I2C
+    i2c.sda ~ ic.SDA_SDI_SDO
+    i2c.scl ~ ic.SCL_SPC
+    i2c.gnd ~ ic.GND
+
+    # set I2C address
+
+    # bypass capacitor
+    cap = new Capacitor
+    cap.value = 100nF +/- 20%
+    cap.package = "0402"
+    cap.power ~ power
