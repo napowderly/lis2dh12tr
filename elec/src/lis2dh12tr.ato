@@ -34,6 +34,8 @@ module LIS2DH12TR:
     interrup1 = new Pair
     interrup2 = new Pair
 
+    signal vcc ~ power.vcc
+
     # Power
     power.vcc ~ ic.VDD
     power.vcc ~ ic.VDD_IO
